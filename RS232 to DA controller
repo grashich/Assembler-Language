@@ -1,0 +1,122 @@
+#define I asm
+
+Void pr(int *p)
+    {
+        ( printf("%d ", p);
+    }
+
+void port (int *Tx, int *Tv, int *Tz, int *Px, int *Py, int *Pz, int *Sx, int *Sy, int *Sz)
+{
+    int Vx=0, Vy=0, Vz=0, Qx=0, Qy=0, Qz=0, x1=1, x0=0 , y1=2, y0=0, z1=3, z0=0 ;
+    //	printf(" %d %d %d %d %d %d In", Tx, Ty, Tz, Px, Py, Pz) ;
+    pr(Tx); pr(Ty); pr (Tz); pr(Px); pr (Py); pr(Pz);
+    getch();
+
+I	    xor si,si
+I	    xor di,di
+I	    xor si, Qx
+I	    mov si, Qx
+I	    mov di, Qy
+I	    mov dx, Qz
+
+p1:
+I       call X_out
+I       mov ax, Px
+I       cmp ax, si
+I       je Segment_End
+
+I       call Y_out
+I       move ax, Py
+I       cmp ax, di
+I       je Segment_End
+
+I       call Z_out
+I       mov ax, Pz
+I       cmp ax, dx
+I       je Segment_End
+
+I       jmp p1
+
+Segment_End: I     jmp Driver_End
+
+I       X_out proc near
+I       mov ax, Vx
+I       mov bx, Tx
+// I       mov si, Qx
+I       inc ax
+I       cmp ax, bx
+I       je px
+I       mov Vx, ax
+I       ret
+px:     I   inc si
+//I         mov Qx, si
+I       xor ax, ax
+I           push dx
+I           mov dx, 378h
+I       mov al, x1
+I       out dx, al
+
+printf("X");
+I       mov al, x0
+I       out dx, al
+
+printf("x ");
+I           pop dx
+I       xor ax, ax
+I       mov Vx, ax
+I       ret
+I       endp
+
+I   Y_out proc near
+I       mov ax, Vy
+I       mov bx, Ty
+//I       mov di, Qy
+I       inc ax
+I       cmp ax, bx
+I       je py
+I       mov Vy, ax
+I       ret
+py: I   inc di
+//I     mov Qy, di
+I       xor ax, ax
+I           push dx
+I           mov dx, 378h
+I       mov al, y1
+I       out dx, al
+printf(" Y");
+I       mov al, y0
+I       out dx, al
+printf("y ");
+I           pop dx
+I       xor ax, ax
+I       mov Vy, ax
+I       ret
+I       endp
+
+I   Z_out proc near
+I       mov ax, Vz
+I       mov bx, Tz
+I       mov dx, Qz
+I       inc ax
+I       cmp ax, bx
+I       je pz
+I       mov Vz, ax
+I       pz:     inc dx
+I       mov Qz, dx
+I       xor ax, ax
+I           push dx
+I           mov dx, 378h
+I       mov al, z1
+I       out dx, al
+printf(" Z");
+I       mov al, z0
+I       out dx, al
+printf("z ");
+I           pop dx
+I       xor ax, ax`
+I       mov Vz, ax
+I       ret
+I       endp
+
+Driver_End:  return;
+}
